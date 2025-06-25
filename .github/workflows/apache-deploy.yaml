@@ -18,15 +18,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y apache2
 
+      - name: Ensure Apache root exists
+        run: sudo mkdir -p /var/www/html
+
       - name: Copy site files to Apache root
         run: |
           sudo rsync -av --exclude='.git*' --exclude='.github' ./ /var/www/html/
           sudo chown -R www-data:www-data /var/www/html/
 
-      - name: Remove workflow files from web root
-        run: |
-          sudo rm -rf /var/www/html/.github
-          sudo rm -f /var/www/html/apache-deploy.yaml
+      - name: Start Apache
+        run: sudo systemctl start apache2
 
       - name: Reload Apache
         run: sudo systemctl reload apache2
